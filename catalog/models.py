@@ -8,6 +8,8 @@ class Play(models.Model):
     description = models.TextField()
     image = models.ImageField(null=True, upload_to=play_image_path)
     actors = models.ManyToManyField("Actor", related_name="plays")
+    genres = models.ManyToManyField("Genre", related_name="plays")
+
 
     def __str__(self):
         return f"{self.title}, {self.description}"
