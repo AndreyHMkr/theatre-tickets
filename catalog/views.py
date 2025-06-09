@@ -103,7 +103,7 @@ class PerformanceViewSet(viewsets.ModelViewSet):
         return Performance.objects.select_related("play", "theatre_hall").annotate(
             sold_tickets=Count("tickets", filter=Q(tickets__reservation__isnull=False)),
             free_seats=F("theatre_hall__seats_in_row") * F("theatre_hall__rows")
-            - Count("tickets", filter=Q(tickets__reservation__isnull=False)),
+                       - Count("tickets", filter=Q(tickets__reservation__isnull=False)),
             all_tickets=Count("tickets"),
             total_seats=ExpressionWrapper(
                 F("theatre_hall__rows") * F("theatre_hall__seats_in_row"),
