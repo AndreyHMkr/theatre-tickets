@@ -59,13 +59,14 @@ class PlayListSerializer(serializers.ModelSerializer):
 
 class PlayRetrieveSerializer(serializers.ModelSerializer):
     actors = serializers.StringRelatedField(many=True, read_only=True)
+    genres = serializers.StringRelatedField(many=True, read_only=True)
     actor_ids = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Actor.objects.all(), write_only=True, source="actors"
     )
 
     class Meta:
         model = Play
-        fields = ("title", "description", "actors", "actor_ids", "image")
+        fields = ("genres", "title", "description", "actors", "actor_ids", "image")
 
 
 class PlayImageSerializer(serializers.ModelSerializer):
@@ -87,6 +88,12 @@ class PerformanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Performance
         fields = ("play", "theatre_hall", "show_time")
+
+
+class GenresSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Genre
+        fields = ("name",)
 
 
 class PerformanceListSerializer(serializers.ModelSerializer):
@@ -137,6 +144,12 @@ class TheatreHallImageSerializer(serializers.ModelSerializer):
 class PerformanceRetrieveSerializer(serializers.ModelSerializer):
     theatre_hall = TheatreHallSerializer(read_only=True)
     sold_tickets = serializers.IntegerField()
+    genres = serializers.SlugRelatedField(
+        source="play.genres",
+        many=True,
+        read_only=True,
+        slug_field="name",
+    )
     total_seats = serializers.IntegerField()
     taken_seat = serializers.SlugRelatedField(
         many=True, read_only=True, slug_field="seat", source="ticket_set"
@@ -147,6 +160,7 @@ class PerformanceRetrieveSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "play",
+            "genres",
             "theatre_hall",
             "show_time",
             "total_seats",
