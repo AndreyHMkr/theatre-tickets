@@ -109,7 +109,7 @@ class PerformanceViewSet(viewsets.ModelViewSet):
                 F("theatre_hall__rows") * F("theatre_hall__seats_in_row"),
                 output_field=IntegerField(),
             ),
-        )
+        ).prefetch_related("tickets", "play__genres")
 
 
 class TicketViewSet(viewsets.ModelViewSet):
